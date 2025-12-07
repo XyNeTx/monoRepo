@@ -17,6 +17,9 @@ frontend/coverage
 frontend/.next/
 frontend/out/
 
+# go gin
+backend/tmp/
+
 # production
 frontend/build
 
