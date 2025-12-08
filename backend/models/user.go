@@ -12,6 +12,6 @@ type User struct {
 	Age     int
 }
 
-func (User) TableName() string {
-	return "user"
-}
+// func (User) TableName() string {
+// 	return "user"
+// }

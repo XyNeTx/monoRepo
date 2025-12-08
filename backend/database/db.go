@@ -8,11 +8,17 @@ import (
 )
 
 const (
-	host     = "localhost"    // or the Docker service name if running in another container
+	// host     = "localhost"    // or the Docker service name if running in another container
+	// port     = "5432"         // default PostgreSQL port
+	// user     = "postgres"     // as defined in docker-compose.yml
+	// password = "@!Xn13799173" // as defined in docker-compose.yml
+	// dbname   = "postgres"     // as defined in docker-compose.yml
+
+	host     = "156.71.5.100" // or the Docker service name if running in another container
 	port     = "5432"         // default PostgreSQL port
-	user     = "postgres"     // as defined in docker-compose.yml
-	password = "@!Xn13799173" // as defined in docker-compose.yml
-	dbname   = "postgres"     // as defined in docker-compose.yml
+	user     = "myuser"       // as defined in docker-compose.yml
+	password = "mypassword"   // as defined in docker-compose.yml
+	dbname   = "TestDatabase" // as defined in docker-compose.yml
 )
 
 var DB *gorm.DB
