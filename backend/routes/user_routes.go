@@ -2,16 +2,11 @@ package routes
 
 import (
 	"fiber-api/controllers"
-	"fiber-api/database"
-	"fiber-api/models"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func UserRoute(app fiber.Router) {
-	database.ConnectDB()
-
-	database.DB.AutoMigrate(&models.User{})
 
 	api := app.Group("/api")
 

@@ -43,10 +43,13 @@ func CreateUsers(userObj models.User) (models.User, error) {
 
 func EditUsers(userObj models.User) (models.User, error) {
 	var userDB models.User
+
 	database.DB.Model(&models.User{}).Where("email = ?", userObj.Email).First(&userDB)
+
 	if userDB.ID == 0 {
 		return userDB, gorm.ErrRecordNotFound
 	}
+
 	userDB.Name = userObj.Name
 	userDB.Surname = userObj.Surname
 	userDB.Age = userObj.Age
