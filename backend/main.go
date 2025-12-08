@@ -1,30 +1,34 @@
 package main
 
 import (
-	"net/http"
+	"fiber-api/routes"
 
-	"github.com/gin-gonic/gin" // นำเข้าแพ็คเกจ Gin
+	// นำเข้าแพ็คเกจ Gin
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func main() {
-	router := gin.Default() // สร้าง router ด้วย Gin
+	app := fiber.New() // สร้าง router ด้วย Gin
 
-	router.Use(func(c *gin.Context){
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	// app.Use(func(c *fiber.Ctx) error {
+	// 	c.Set("Access-Control-Allow-Origin", "*")
+	// 	c.Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+	// 	c.Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
+	// 	if c.Method() == "OPTIONS" {
+	// 		return c.SendStatus(204)
+	// 	}
 
-		c.Next()
+	// 	return c.Next()
+	// })
+	app.Use(cors.New())
+
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.Status(200).JSON(fiber.Map{"message": "Welcome to the Fiber API"})
 	})
 
-	router.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"message": "Hello from Gin!"})
-	})
+	routes.UserRoute(app)
 
-	router.Run(":8080") // รันเซิร์ฟเวอร์บน port 8080
+	app.Listen(":8080") // รันเซิร์ฟเวอร์บน port 8080
 }
