@@ -1,6 +1,11 @@
+'use client'
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
+import { API_LINK } from "@/constants/constants";
+import { IResponse } from "@/types/IResponse";
+import axios from "axios";
+import Image from "next/image";
+import { useState } from "react";
 interface Login1Props {
   heading?: string;
   logo: {
@@ -15,6 +20,25 @@ interface Login1Props {
   signupUrl?: string;
 }
 
+async function LoginClicked(email:string,password:string) {
+  console.log({email});
+  console.log({password});
+  console.log({API_LINK})
+  console.log(process.env.NEXT_PUBLIC_API_LINK);
+  try{
+    const response:IResponse= await axios.post<IResponse>(API_LINK + "/users/login",{
+      Email: email,
+      PasswordHash: password
+    }).then((result)=>{
+      return result.data;
+    })
+    console.log(response);
+  }
+  catch (err){
+    console.error(err);
+  }
+}
+
 const Login1 = ({
   heading = "Login",
   logo = {
@@ -27,17 +51,21 @@ const Login1 = ({
   signupText = "Need an account?",
   signupUrl = "https://shadcnblocks.com",
 }: Login1Props) => {
+  const [email,setEmail] = useState<string>("");
+  const [password,setPassword] = useState<string>("");
   return (
     <section className="bg-muted h-screen">
       <div className="flex h-full bg-gray-100 dark:bg-black items-center justify-center">
         {/* Logo */}
         <div className="flex flex-col items-center gap-6 lg:justify-start">
           <a href={logo.url}>
-            <img
+            <Image
               src={logo.src}
               alt={logo.alt}
               title={logo.title}
               className="h-10 dark:invert"
+              width={200}
+              height={40}
             />
           </a>
           <div className="min-w-sm border-muted bg-background flex w-full max-w-sm flex-col items-center gap-y-4 rounded-md border px-6 py-8 shadow-md">
@@ -47,14 +75,18 @@ const Login1 = ({
               placeholder="Email"
               className="text-sm"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <Input
               type="password"
               placeholder="Password"
               className="text-sm"
               required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
-            <Button type="submit" className="w-full">
+            <Button type="button" onClick={() => LoginClicked(email,password)} className="w-full">
               {buttonText}
             </Button>
           </div>

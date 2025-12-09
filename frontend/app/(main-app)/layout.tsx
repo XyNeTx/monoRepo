@@ -1,9 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 // surpress global css warning
-// @ts-expect-error - allow importing global css without type declarations
-import "../app/globals.css";
-import { ThemeProvider } from "../components/theme-provider";
-import { ToggleTheme } from "../components/toggle-theme";
+import "@/app/globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ToggleTheme } from "@/components/toggle-theme";
 import { Metadata } from "next";
 
 const geistSans = Geist({

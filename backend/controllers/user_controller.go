@@ -19,7 +19,7 @@ func GetUserByEmail(c *fiber.Ctx) error {
 	email := c.Params("email")
 	user, err := services.GetUserByEmail(email)
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"message": "Failed to retrieve user"})
+		return c.Status(500).JSON(fiber.Map{"message": "Failed to retrieve user","error": err.Error()})
 	}
 	return c.Status(200).JSON(fiber.Map{"data": user})
 }
@@ -62,4 +62,23 @@ func DeleteUser(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"message": "Failed to delete user"})
 	}
 	return c.Status(200).JSON(fiber.Map{"message": "User deleted successfully"})
+}
+
+func LoginUser(c *fiber.Ctx) error {
+	loginReq := new(models.User)
+
+	if err := c.BodyParser(loginReq); err != nil {
+		return c.Status(400).JSON(fiber.Map{"message": "Invalid request"})
+	}
+	isValid, err := services.VerifyPassword(loginReq.Email, loginReq.PasswordHash)
+
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"message": "Login failed"})
+	}
+
+	if !isValid {
+		return c.Status(401).JSON(fiber.Map{"message": "Invalid Email or Password"})
+	}
+
+	return c.Status(200).JSON(fiber.Map{"message": "Login successful"})
 }
