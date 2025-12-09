@@ -1,15 +1,20 @@
 package main
 
 import (
+	"fiber-api/config"
+	"fiber-api/database"
 	"fiber-api/routes"
 
-	// นำเข้าแพ็คเกจ Gin
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func main() {
-	app := fiber.New() // สร้าง router ด้วย Gin
+	config.LoadEnv()
+	database.ConnectDB()
+	database.Migrate()
+
+	app := fiber.New() // สร้าง router ด้วย
 
 	// app.Use(func(c *fiber.Ctx) error {
 	// 	c.Set("Access-Control-Allow-Origin", "*")
