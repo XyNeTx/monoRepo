@@ -33,7 +33,8 @@ func main() {
 		return c.Status(200).JSON(fiber.Map{"message": "Welcome to the Fiber API"})
 	})
 
-	routes.UserRoute(app)
+	api := app.Group("/api")
+	routes.UserRoute(api)
 
 	app.Listen(":8080") // รันเซิร์ฟเวอร์บน port 8080
 }

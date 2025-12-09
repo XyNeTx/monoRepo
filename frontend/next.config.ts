@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
-import path from "path";
+import { loadEnvFile } from "process";
+
+loadEnvFile("../.env")
 
 const nextConfig: NextConfig = {
   /* config options here */

@@ -1,15 +1,20 @@
 package services
 
 import (
+	"crypto/hmac"
+	"crypto/rand"
+	"encoding/base64"
+	"fiber-api/config"
 	"fiber-api/database"
 	"fiber-api/models"
 
+	"golang.org/x/crypto/argon2"
 	"gorm.io/gorm"
 )
 
 func GetAllUsers() (userArr []models.User, err error) {
-	//database.DB.Find(&userArr)
-	database.DB.Model(&models.User{}).Raw("SELECT * FROM users WHERE id = ?", 1).Scan(&userArr)
+	database.DB.Find(&userArr)
+	//database.DB.Model(&models.User{}).Raw("SELECT * FROM users WHERE id = ?", 1).Scan(&userArr)
 	return userArr, err
 }
 
@@ -37,6 +42,20 @@ func CreateUsers(userObj models.User) (models.User, error) {
 
 	// userList = append(userList, createUser, createUser2)
 	// err = database.DB.Create(&userList).Error
+	salt := make([]byte, 16)
+	rand.Read(salt)
+
+	pepper := config.GetEnv("HASH_SECRET")
+	fullPassword := userObj.PasswordHash + pepper
+
+	hash := argon2.IDKey([]byte(fullPassword), salt, 1, 64*1024, 4, 32)
+
+	saltB64 := base64.RawStdEncoding.EncodeToString(salt)
+	hashB64 := base64.RawStdEncoding.EncodeToString(hash)
+
+	userObj.PasswordHash = hashB64
+	userObj.PasswordSalt = saltB64
+
 	result := database.DB.Create(&userObj)
 	return userObj, result.Error
 }
@@ -61,4 +80,22 @@ func EditUsers(userObj models.User) (models.User, error) {
 func DeleteUser(email string) error {
 	result := database.DB.Where("email = ?", email).Delete(&models.User{})
 	return result.Error
+}
+
+func VerifyPassword(email string, password string) (bool, error) {
+	userObj, err := GetUserByEmail(email)
+
+	if err != nil {
+		return false, err
+	}
+
+	pepper := config.GetEnv("HASH_SECRET")
+	fullPassword := password + pepper
+
+	salt, _ := base64.RawStdEncoding.DecodeString(userObj.PasswordSalt)
+
+	receiveHash := argon2.IDKey([]byte(fullPassword), salt, 1, 64*1024, 4, 32)
+	expectedHash, _ := base64.RawStdEncoding.DecodeString(userObj.PasswordHash)
+
+	return hmac.Equal(receiveHash, expectedHash), nil
 }
