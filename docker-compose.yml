@@ -27,11 +27,13 @@ services:
   #   container_name: shopping-web-docker
   #   ports:
   #     - 3000:3000
-  monorepo:
+  frontend:
     build:
-      context: .
-      dockerfile: dockerfile
+      context: ./frontend
     ports:
-      - 8080:3000
-    volumes:
-      - ./:/app
+      - "3000:3000"
+  backend:
+      build:
+        context: ./backend
+      ports:
+        - "8080:8080"
