@@ -4,6 +4,7 @@ import "@/app/globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ToggleTheme } from "@/components/toggle-theme";
 import { Metadata } from "next";
+import { Navbar1 } from "@/components/navbar1";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,11 +38,13 @@ export default function RootLayout({
           disableTransitionOnChange
           storageKey="theme"
           >
-            <div className="flex justify-end p-4">
-              <ToggleTheme/>
+            <div className="flex lg:min-w-screen w-full justtify-start lg:justify-center bg-white dark:bg-black">
+              <Navbar1/>
             </div>
-            <main className="flex min-h-screen w-full items-center justify-center bg-white dark:bg-black sm:items-start">
-              {children}
+            <main className="flex min-h-screen w-full bg-white dark:bg-black">
+              <div className="flex-row">
+                {children}
+              </div>
             </main>
         </ThemeProvider>
       </body>

@@ -78,6 +78,7 @@ const Login1 = ({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+            <span className="text-end items-baseline text-xs align-end">forgot password ?</span>
             <Input
               type="password"
               placeholder="Password"
