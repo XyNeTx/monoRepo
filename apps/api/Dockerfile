@@ -7,9 +7,12 @@ COPY go.mod go.sum ./
 
 RUN go mod download
 
-COPY . .
+COPY . . 
 
-RUN go install github.com/cosmtrek/air@latest
+RUN go install github.com/air-verse/air@latest
+
+WORKDIR /app/cmd/server
 
 EXPOSE 8080
+
 CMD [ "air" ]

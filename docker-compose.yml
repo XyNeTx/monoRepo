@@ -1,39 +1,45 @@
 
 services:
-  # db:
-  #   image: postgres:18.1-alpine
-  #   container_name: postgres
-  #   environment:
-  #     - POSTGRES_USER=postgres
-  #     - POSTGRES_PASSWORD=postgres
-  #     - POSTGRES_DB=postgres
-  #   ports:
-  #     - "5432:5432"
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  # pgadmin:
-  #   image: dpage/pgadmin4
-  #   container_name: pgadmin
-  #   environment:
-  #     - PGADMIN_DEFAULT_EMAIL=admin@admin.com
-  #     - PGADMIN_DEFAULT_PASSWORD=admin
-  #   ports:
-  #     - "5050:80"
-  #   depends_on:
-  #     - db
-  # shoppingWeb:
-  #   build: .
-  #   image: shopping-web-docker:latest
-  #   container_name: shopping-web-docker
-  #   ports:
-  #     - 3000:3000
-  frontend:
+  db:
+    image: postgres:18.1-alpine
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+  api:
     build:
-      context: ./frontend
+      context: ./apps/api
+      dockerfile: Dockerfile
+    env_file:
+      - ./apps/api/.env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    env_file:
+      - ./apps/web/.env
     ports:
       - "3000:3000"
-  backend:
-      build:
-        context: ./backend
-      ports:
-        - "8080:8080"
+    depends_on:
+      - api
+volumes:
+  postgres_data:

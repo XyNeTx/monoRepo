@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fiber-api/config"
-	"fiber-api/database"
-	"fiber-api/routes"
+	"fiber-api/internal/config"
+	"fiber-api/internal/database"
+	"fiber-api/internal/routes"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/cors"

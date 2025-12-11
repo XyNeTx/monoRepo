@@ -1,7 +1,7 @@
 package database
 
 import (
-	"fiber-api/config"
+	"fiber-api/internal/config"
 	"fmt"
 
 	"gorm.io/driver/postgres"
