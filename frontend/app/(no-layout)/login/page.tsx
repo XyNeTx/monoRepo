@@ -14,7 +14,7 @@ export async function fetchHelloGo(){
             //console.log({res});
             return res.data.message;
         })
-        console.log(response);
+        //console.log(response);
         return response;
     }
     catch (err) {

@@ -26,21 +26,21 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" suppressHydrationWarning>
-        <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-            <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-            storageKey="theme"
+            <body
+                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
-                <main className="flex min-h-screen w-full items-center justify-center bg-white dark:bg-black sm:items-start">
-                {children}
-                </main>
-            </ThemeProvider>
-        </body>
+                <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+                storageKey="theme"
+                >
+                    <main className="flex min-h-screen w-full items-center justify-center bg-white dark:bg-black sm:items-start">
+                    {children}
+                    </main>
+                </ThemeProvider>
+            </body>
         </html>
     );
 }
