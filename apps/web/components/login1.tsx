@@ -1,7 +1,7 @@
 'use client'
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { API_LINK } from "@/constants/constants";
+import { PUBLIC_API_LINK } from "@/constants/constants";
 import { IResponse } from "@/types/IResponse";
 import axios from "axios";
 import Image from "next/image";
@@ -23,10 +23,10 @@ interface Login1Props {
 async function LoginClicked(email:string,password:string) {
   console.log({email});
   console.log({password});
-  console.log({API_LINK})
+  console.log({PUBLIC_API_LINK})
   console.log(process.env.NEXT_PUBLIC_API_LINK);
   try{
-    const response:IResponse= await axios.post<IResponse>(API_LINK + "/users/login",{
+    const response:IResponse= await axios.post<IResponse>(PUBLIC_API_LINK + "/api/users/login",{
       Email: email,
       PasswordHash: password
     }).then((result)=>{
@@ -73,6 +73,7 @@ const Login1 = ({
             {heading && <h1 className="text-xl font-semibold">{heading}</h1>}
             <Input
               type="email"
+              id="email"
               placeholder="Email"
               className="text-sm"
               required
@@ -82,6 +83,7 @@ const Login1 = ({
             <span className="text-end items-baseline text-xs align-end">forgot password ?</span>
             <Input
               type="password"
+              id="password"
               placeholder="Password"
               className="text-sm"
               required
