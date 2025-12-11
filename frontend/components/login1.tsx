@@ -36,6 +36,7 @@ async function LoginClicked(email:string,password:string) {
   }
   catch (err){
     console.error(err);
+    return {} as IResponse
   }
 }
 
