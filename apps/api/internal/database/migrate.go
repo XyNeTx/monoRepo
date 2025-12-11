@@ -1,6 +1,6 @@
 package database
 
-import "fiber-api/models"
+import "fiber-api/internal/models"
 
 func Migrate() {
 	DB.AutoMigrate(

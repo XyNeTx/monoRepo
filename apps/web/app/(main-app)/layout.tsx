@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 // surpress global css warning
+
 import "@/app/globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ToggleTheme } from "@/components/toggle-theme";

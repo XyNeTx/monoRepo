@@ -11,34 +11,35 @@ node_modules/
 !.yarn/versions
 
 # testing
-frontend/coverage
+/apps/web/coverage
 
 # next.js
-frontend/.next/
-frontend/out/
+/apps/web/.next/
+/apps/web/out/
 
 # go gin
-backend/tmp/
+/apps/api/tmp/
 
 # production
-frontend/build
+/apps/web/build
 
 # misc
-frontend/.DS_Store
-frontend/*.pem
+/apps/web/.DS_Store
+/apps/web/*.pem
 
 # debug
-frontend/npm-debug.log*
-frontend/yarn-debug.log*
-frontend/yarn-error.log*
-frontend/.pnpm-debug.log*
+/apps/web/npm-debug.log*
+/apps/web/yarn-debug.log*
+/apps/web/yarn-error.log*
+/apps/web/.pnpm-debug.log*
 # env files (can opt-in for committing if needed)
-frontend/.env*
+/apps/web/.env*
 
 # vercel
-frontend/.vercel
+/apps/web/.vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 *.env
+.turbo

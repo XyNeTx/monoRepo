@@ -4,9 +4,9 @@ import (
 	"crypto/hmac"
 	"crypto/rand"
 	"encoding/base64"
-	"fiber-api/config"
-	"fiber-api/database"
-	"fiber-api/models"
+	"fiber-api/internal/config"
+	"fiber-api/internal/database"
+	"fiber-api/internal/models"
 
 	"golang.org/x/crypto/argon2"
 	"gorm.io/gorm"

@@ -1,15 +1,14 @@
 import type { NextConfig } from "next";
+import path from "path";
 import { loadEnvFile } from "process";
-
-loadEnvFile("../.env")
 
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
   cacheComponents: true,
-  // turbopack:  {
-  //   root: path.join(__dirname,'frontend'),
-  // }
+  turbopack: {
+    root: path.join(__dirname, '..'),
+  },
 };
 
 export default nextConfig;
