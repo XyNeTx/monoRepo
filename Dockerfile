@@ -19,4 +19,14 @@ COPY . .
 EXPOSE 3000
 
 # 7. Start your Node.js app when the container starts
-CMD ["npm", "run", "dev"]
+#CMD ["npm", "run", "dev"]
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+
+RUN go mod download
+
+COPY . .
+
+CMD [ "air" ],["npm", "run", "dev"]

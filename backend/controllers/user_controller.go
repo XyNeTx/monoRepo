@@ -4,10 +4,10 @@ import (
 	"fiber-api/models"
 	"fiber-api/services"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
-func GetUsers(c *fiber.Ctx) error {
+func GetUsers(c fiber.Ctx) error {
 	userArr, err := services.GetAllUsers()
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"message": "Failed to retrieve users"})
@@ -15,19 +15,19 @@ func GetUsers(c *fiber.Ctx) error {
 	return c.Status(200).JSON(fiber.Map{"data": userArr})
 }
 
-func GetUserByEmail(c *fiber.Ctx) error {
+func GetUserByEmail(c fiber.Ctx) error {
 	email := c.Params("email")
 	user, err := services.GetUserByEmail(email)
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"message": "Failed to retrieve user","error": err.Error()})
+		return c.Status(500).JSON(fiber.Map{"message": "Failed to retrieve user", "error": err.Error()})
 	}
 	return c.Status(200).JSON(fiber.Map{"data": user})
 }
 
-func CreateUsers(c *fiber.Ctx) error {
+func CreateUsers(c fiber.Ctx) error {
 	user := new(models.User)
 
-	if err := c.BodyParser(user); err != nil {
+	if err := c.Bind().Body(user); err != nil {
 		return c.Status(400).JSON(fiber.Map{"message": "Invalid request"})
 	}
 
@@ -39,10 +39,10 @@ func CreateUsers(c *fiber.Ctx) error {
 	return c.Status(200).JSON(fiber.Map{"data": userCreated, "message": "Success"})
 }
 
-func EditUsers(c *fiber.Ctx) error {
+func EditUsers(c fiber.Ctx) error {
 	user := new(models.User)
 
-	if err := c.BodyParser(user); err != nil {
+	if err := c.Bind().Body(user); err != nil {
 		return c.Status(400).JSON(fiber.Map{"message": "Invalid request"})
 	}
 
@@ -55,7 +55,7 @@ func EditUsers(c *fiber.Ctx) error {
 	return c.Status(200).JSON(fiber.Map{"data": editedUser, "message": "User updated successfully"})
 }
 
-func DeleteUser(c *fiber.Ctx) error {
+func DeleteUser(c fiber.Ctx) error {
 	email := c.Params("email")
 	err := services.DeleteUser(email)
 	if err != nil {
@@ -64,10 +64,10 @@ func DeleteUser(c *fiber.Ctx) error {
 	return c.Status(200).JSON(fiber.Map{"message": "User deleted successfully"})
 }
 
-func LoginUser(c *fiber.Ctx) error {
+func LoginUser(c fiber.Ctx) error {
 	loginReq := new(models.User)
 
-	if err := c.BodyParser(loginReq); err != nil {
+	if err := c.Bind().Body(loginReq); err != nil {
 		return c.Status(400).JSON(fiber.Map{"message": "Invalid request"})
 	}
 	isValid, err := services.VerifyPassword(loginReq.Email, loginReq.PasswordHash)

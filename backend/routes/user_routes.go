@@ -3,7 +3,7 @@ package routes
 import (
 	"fiber-api/controllers"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 func UserRoute(api fiber.Router) {

@@ -21,9 +21,17 @@ services:
   #     - "5050:80"
   #   depends_on:
   #     - db
-  shoppingWeb:
-    build: .
-    image: shopping-web-docker:latest
-    container_name: shopping-web-docker
+  # shoppingWeb:
+  #   build: .
+  #   image: shopping-web-docker:latest
+  #   container_name: shopping-web-docker
+  #   ports:
+  #     - 3000:3000
+  monorepo:
+    build:
+      context: .
+      dockerfile: dockerfile
     ports:
-      - 3000:3000
+      - 8080:3000
+    volumes:
+      - ./:/app
