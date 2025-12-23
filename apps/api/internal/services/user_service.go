@@ -24,24 +24,13 @@ func GetUserByEmail(email string) (models.User, error) {
 	return user, result.Error
 }
 
+func GetUserById(id int) (models.User, error) {
+	var user models.User
+	result := database.DB.Where("id = ?", id).First(&user)
+	return user, result.Error
+}
+
 func CreateUsers(userObj models.User) (models.User, error) {
-	// var userList []models.User
-
-	// var createUser models.User
-	// createUser.Age = 29
-	// createUser.Email = "exzdue3@gmail.com"
-	// createUser.Name = "Sitthiporn"
-	// createUser.Surname = "Polmart"
-
-	// createUser2 := models.User{
-	// 	Age:     29,
-	// 	Email:   "exzdue2@gmail.com",
-	// 	Name:    "Sitthiporn",
-	// 	Surname: "Polmart",
-	// }
-
-	// userList = append(userList, createUser, createUser2)
-	// err = database.DB.Create(&userList).Error
 	salt := make([]byte, 16)
 	rand.Read(salt)
 

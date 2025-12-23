@@ -2,7 +2,9 @@ package main
 
 import (
 	"fiber-api/internal/config"
+	"fiber-api/internal/controllers"
 	"fiber-api/internal/database"
+	_ "fiber-api/internal/docs"
 	"fiber-api/internal/routes"
 
 	"github.com/gofiber/fiber/v3"
@@ -30,11 +32,11 @@ func main() {
 	// })
 	app.Use(cors.New())
 
-	app.Get("/", func(c fiber.Ctx) error {
-		return c.Status(200).JSON(fiber.Map{"message": "Welcome to the Fiber API"})
-	})
+	app.Get("/swagger/*", swagger.New(swagger.Config{
+		URL: "doc.json",
+	}))
 
-	app.Get("/swagger/*", swagger.HandlerDefault) // default
+	app.Get("/", controllers.InitialUserController)
 
 	api := app.Group("/api")
 	routes.UserRoute(api)

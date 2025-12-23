@@ -5,8 +5,12 @@ import (
 )
 
 type User struct {
-	gorm.Model
-	Email        string `gorm:"unique"`
+	//gorm.Model
+	ID           int `gorm:"primaryKey" example:"8"`
+	created_at   gorm.DeletedAt 
+	updated_at   gorm.DeletedAt
+	deleted_at   gorm.DeletedAt
+	Email        string `gorm:"unique" example:"sitthiporn.po@gmail.com"`
 	Name         string
 	Surname      string
 	Age          int

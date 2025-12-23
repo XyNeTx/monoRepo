@@ -4,9 +4,28 @@ import (
 	"fiber-api/internal/models"
 	"fiber-api/internal/services"
 
+	"strconv"
+
 	"github.com/gofiber/fiber/v3"
 )
 
+// @Summary Welcome to Fiber API
+// @Tags Root
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]string
+// @Router / [get]
+func InitialUserController(c fiber.Ctx) error {
+	return c.Status(200).JSON(fiber.Map{"message": "Welcome to Fiber API"})
+}
+
+// @Summary Get All Users
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.User
+// @Failure 500 "Internal Server Error"
+// @Router /api/users [get]
 func GetUsers(c fiber.Ctx) error {
 	userArr, err := services.GetAllUsers()
 	if err != nil {
@@ -15,9 +34,38 @@ func GetUsers(c fiber.Ctx) error {
 	return c.Status(200).JSON(fiber.Map{"data": userArr})
 }
 
+// @Summary Get User by Email
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param	email Sitthiporn.po@gmail.coml	path	string	true  "The email of the resource Sitthiporn.po@gmail.com"
+// @Description Get a user by their email address
+// @Success 200 {object} models.User
+// @Failure 401 "Unauthorized"
+// @Router /api/users/email/{email} [get]
 func GetUserByEmail(c fiber.Ctx) error {
 	email := c.Params("email")
 	user, err := services.GetUserByEmail(email)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"message": "Failed to retrieve user", "error": err.Error()})
+	}
+	return c.Status(200).JSON(fiber.Map{"data": user})
+}
+
+// @Summary Get All Users
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param	id	path	string	true "The ID of the user"
+// @Success 200 {array} models.User
+// @Failure 500 "Internal Server Error"
+// @Router /api/users/id/{id} [get]
+func GetUserById(c fiber.Ctx) error {
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"message": "Invalid ID"})
+	}
+	user, err := services.GetUserById(id)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"message": "Failed to retrieve user", "error": err.Error()})
 	}
