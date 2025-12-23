@@ -13,6 +13,8 @@ RUN go install github.com/air-verse/air@latest
 
 WORKDIR /app/cmd/server
 
+RUN mv .air_linux.toml .air.toml
+
 EXPOSE 8080
 
 CMD [ "air" ]

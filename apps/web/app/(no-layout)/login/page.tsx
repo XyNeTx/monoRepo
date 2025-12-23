@@ -1,5 +1,5 @@
 import { Login1 } from "@/components/login1";
-import { SSR_API_LINK } from "@/constants/constants";
+import { API_LINK} from "@/constants/constants";
 import axios from 'axios'
 import { cacheLife } from "next/cache";
 
@@ -10,8 +10,9 @@ export interface GoResponse{
 export async function fetchHelloGo(){
     'use cache'
     cacheLife('max');
+    //console.log(API_LINK);
     try{
-        const response:string = await axios.get<GoResponse>(SSR_API_LINK!).then((res)=>{
+        const response:string = await axios.get<GoResponse>(API_LINK!).then((res)=>{
             //console.log({res});
             return res.data.message + " Edited";
         })
