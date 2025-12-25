@@ -2,12 +2,11 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { API_LINK } from "@/constants/constants";
+import { toastPromise } from "@/lib/toastPromise";
 import { IResponse } from "@/types/IResponse";
 import axios from "axios";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { useState } from "react";
-import { toast } from "sonner";
 interface Login1Props {
   heading?: string;
   logo: {
@@ -22,20 +21,39 @@ interface Login1Props {
   signupUrl?: string;
 }
 
-async function LoginClicked(email:string,password:string) {
-  console.log({email});
-  console.log({password});
-  console.log({API_LINK});
-  try{
-    const response:IResponse= await axios.post<IResponse>(API_LINK + "/api/users/login",{
-      Email: email,
-      PasswordHash: password
-    }).then((result)=> {
-      toast.success("Login Success")
-      return result.data;
+export interface LoginDTO {
+  email:string,
+  password:string
+}
+
+async function LoginClicked(e:React.FormEvent<HTMLFormElement>) {
+  e.preventDefault();
+  //console.log({API_LINK});
+
+  const formData = new FormData(e.currentTarget);
+  const formObj = Object.fromEntries(formData.entries())
+  const data:LoginDTO = {
+    email : formObj.email.toString(),
+    password : formObj.password.toString()
+  }
+
+  toastPromise( Login(data),
+    "Logging in Please Wait . . .",
+    "Login Success Redirecting . . .",
+    "Login Failed Please Try Again !!"
+  )
+
+}
+
+async function Login(data:LoginDTO) {
+  await new Promise(resolve => setTimeout(resolve, 3000))
+  try
+  {
+    await axios.post<IResponse>(API_LINK + "/api/users/login",
+      data
+    ).then(()=> {
+      return redirect("/");
     })
-    console.log(response);
-    redirect("/");
   }
   catch (err){
     console.error(err);
@@ -55,8 +73,6 @@ const Login1 = ({
   signupText = "Need an account?",
   signupUrl = "https://shadcnblocks.com",
 }: Login1Props) => {
-  const [email,setEmail] = useState<string>("");
-  const [password,setPassword] = useState<string>("");
   return (
     <section className="bg-muted h-screen">
       <div className="flex h-full bg-gray-100 dark:bg-black items-center justify-center">
@@ -72,31 +88,31 @@ const Login1 = ({
               height={40}
             />
           </a>
-          <div className="min-w-sm border-muted bg-background flex w-full max-w-sm flex-col items-center gap-y-4 rounded-md border px-6 py-8 shadow-md">
-            {heading && <h1 className="text-xl font-semibold">{heading}</h1>}
-            <Input
-              type="email"
-              id="email"
-              placeholder="Email"
-              className="text-sm"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <span className="text-end items-baseline text-xs align-end">forgot password ?</span>
-            <Input
-              type="password"
-              id="password"
-              placeholder="Password"
-              className="text-sm"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button type="button" onClick={() => LoginClicked(email,password)} className="w-full">
-              {buttonText}
-            </Button>
-          </div>
+          <form onSubmit={LoginClicked}>
+            <div className="min-w-sm border-muted bg-background flex w-full max-w-sm flex-col items-center gap-y-4 rounded-md border px-6 py-8 shadow-md">
+              {heading && <h1 className="text-xl font-semibold">{heading}</h1>}
+              <Input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Email"
+                className="text-sm"
+                required
+              />
+              <span className="text-end items-baseline text-xs align-end">forgot password ?</span>
+              <Input
+                type="password"
+                id="password"
+                placeholder="Password"
+                className="text-sm"
+                name="password"
+                required
+              />
+              <Button type="submit" className="w-full">
+                {buttonText}
+              </Button>
+            </div>
+          </form>
           <div className="text-muted-foreground flex justify-center gap-1 text-sm">
             <p>{signupText}</p>
             <a
