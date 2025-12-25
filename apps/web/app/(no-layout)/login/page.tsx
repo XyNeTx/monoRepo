@@ -34,7 +34,7 @@ export default async function Page() {
     }
     return (
         <div className="justify-center items-center bg-white dark:bg-black">
-            <Login1 heading={data} buttonText="Login" signupText="Create New Account" logo={logoProps} signupUrl=""/>
+            <Login1 heading={data} buttonText="Login" signupText="Create New Account" logo={logoProps} signupUrl="/signup"/>
         </div>
     );
 }

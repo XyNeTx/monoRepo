@@ -1,11 +1,13 @@
 'use client'
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PUBLIC_API_LINK } from "@/constants/constants";
+import { API_LINK } from "@/constants/constants";
 import { IResponse } from "@/types/IResponse";
 import axios from "axios";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 interface Login1Props {
   heading?: string;
   logo: {
@@ -23,16 +25,17 @@ interface Login1Props {
 async function LoginClicked(email:string,password:string) {
   console.log({email});
   console.log({password});
-  console.log({PUBLIC_API_LINK})
-  console.log(process.env.NEXT_PUBLIC_API_LINK);
+  console.log({API_LINK});
   try{
-    const response:IResponse= await axios.post<IResponse>(PUBLIC_API_LINK + "/api/users/login",{
+    const response:IResponse= await axios.post<IResponse>(API_LINK + "/api/users/login",{
       Email: email,
       PasswordHash: password
-    }).then((result)=>{
+    }).then((result)=> {
+      toast.success("Login Success")
       return result.data;
     })
     console.log(response);
+    redirect("/");
   }
   catch (err){
     console.error(err);

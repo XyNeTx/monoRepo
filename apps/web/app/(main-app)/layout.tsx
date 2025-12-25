@@ -3,9 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import "@/app/globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { ToggleTheme } from "@/components/toggle-theme";
 import { Metadata } from "next";
 import { Navbar1 } from "@/components/navbar1";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +39,7 @@ export default function RootLayout({
           disableTransitionOnChange
           storageKey="theme"
           >
+            <Toaster closeButton richColors position={"top-center"} expand={false} />
             <div className="flex lg:min-w-screen w-full justtify-start lg:justify-center bg-white dark:bg-black">
               <Navbar1/>
             </div>

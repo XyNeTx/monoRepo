@@ -6,6 +6,7 @@ import (
 	"fiber-api/internal/database"
 	_ "fiber-api/internal/docs"
 	"fiber-api/internal/routes"
+	"fiber-api/internal/services"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/cors"
@@ -14,9 +15,11 @@ import (
 
 func main() {
 	config.LoadEnv()
-	database.ConnectDB()
-	database.Migrate()
-
+	db, err := database.ConnectDB()
+	if err != nil {
+		panic("failed to connect Database")
+	}
+	database.Migrate(db)
 	app := fiber.New() // สร้าง router ด้วย
 
 	// app.Use(func(c *fiber.Ctx) error {
@@ -36,10 +39,13 @@ func main() {
 		URL: "doc.json",
 	}))
 
+	userService := services.NewUserService(db)
+	userController := controllers.NewUserController(userService)
+
 	app.Get("/", controllers.InitialUserController)
 
 	api := app.Group("/api")
-	routes.UserRoute(api)
+	routes.UserRoute(api, userController)
 
 	app.Listen(":8080") // รันเซิร์ฟเวอร์บน port 8080
 }

@@ -1,3 +1,4 @@
+'use client'
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,6 +15,40 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { API_LINK } from "@/constants/constants"
+import { IResponse } from "@/types/IResponse"
+import axios from "axios"
+import { toast } from "sonner"
+import { redirect } from "next/navigation"
+
+async function SignupClick(e:React.FormEvent<HTMLFormElement>) {
+  // console.log({email});
+  // console.log({password});
+  e.preventDefault();
+  console.log({e})
+  const formData = new FormData(e.currentTarget);
+  console.log({formData})
+  console.log({API_LINK});
+  const data = Object.fromEntries(formData);
+  console.log({data});
+  if(data.confirmpassword !== data.password){
+    return toast.error("Password and Confirm Password not matched")
+  }
+  try{
+    const response:IResponse = await axios.post<IResponse>(API_LINK + "/api/users/signup", data
+    ).then((result)=> {
+      toast.success("Registration Success Redirecting to Login. . .")
+      return result.data;
+    })
+    console.log(response);
+    redirect("/login");
+  }
+  catch (err){
+    console.error(err);
+    toast.error("Sign Up not Success Please Try Again");
+    return {} as IResponse
+  }
+}
 
 export function SignupForm({
   className,
@@ -29,17 +64,37 @@ export function SignupForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form id="formSignUp" onSubmit={SignupClick}>
             <FieldGroup>
+              <Field className="grid grid-cols-2 gap-4">
+                  <Field>
+                    <FieldLabel htmlFor="firstname">First Name</FieldLabel>
+                    <Input id="name" name="name" type="text" required />
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="lastname">Last Name</FieldLabel>
+                    <Input id="surname" name="surname" type="text" required />
+                  </Field>
+                </Field>
               <Field>
-                <FieldLabel htmlFor="name">Full Name</FieldLabel>
-                <Input id="name" type="text" placeholder="John Doe" required />
+                <FieldLabel htmlFor="age">Age</FieldLabel>
+                <Input
+                  id="age"
+                  type="number"
+                  name="age"
+                  min={"18"}
+                  max={"50"}
+                  placeholder="18-50"
+                  step={"1"}
+                  required
+                />
               </Field>
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
                   id="email"
                   type="email"
+                  name="email"
                   placeholder="m@example.com"
                   required
                 />
@@ -48,13 +103,13 @@ export function SignupForm({
                 <Field className="grid grid-cols-2 gap-4">
                   <Field>
                     <FieldLabel htmlFor="password">Password</FieldLabel>
-                    <Input id="password" type="password" required />
+                    <Input id="password" name="password" type="password" required />
                   </Field>
                   <Field>
                     <FieldLabel htmlFor="confirm-password">
                       Confirm Password
                     </FieldLabel>
-                    <Input id="confirm-password" type="password" required />
+                    <Input id="confirm-password" name="confirmpassword" type="password" required />
                   </Field>
                 </Field>
                 <FieldDescription>

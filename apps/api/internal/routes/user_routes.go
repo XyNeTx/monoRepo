@@ -6,13 +6,14 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-func UserRoute(api fiber.Router) {
+func UserRoute(api fiber.Router, uc *controllers.UserController) {
 
-	api.Get("/users", controllers.GetUsers)
-	api.Get("/users/id/:id", controllers.GetUserById)
-	api.Get("/users/email/:email", controllers.GetUserByEmail)
-	api.Post("/users", controllers.CreateUsers)
-	api.Put("/users/", controllers.EditUsers)
-	api.Delete("/users/:email", controllers.DeleteUser)
-	api.Post("/users/login", controllers.LoginUser)
+	api.Get("/users", uc.GetUsers)
+	api.Get("/users/id/:id", uc.GetUserById)
+	api.Get("/users/email/:email", uc.GetUserByEmail)
+	api.Post("/users/signup", uc.CreateUsers)
+	api.Put("/users/", uc.EditUsers)
+	api.Delete("/users/:email", uc.DeleteUser)
+	api.Post("/users/login", uc.LoginUser)
+	api.Patch("/users/change-password", uc.ChangePassword)
 }

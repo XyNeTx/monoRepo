@@ -1,8 +1,12 @@
 package database
 
-import "fiber-api/internal/models"
+import (
+	"fiber-api/internal/models"
 
-func Migrate() {
+	"gorm.io/gorm"
+)
+
+func Migrate(DB *gorm.DB) {
 	DB.AutoMigrate(
 		&models.User{},
 	)

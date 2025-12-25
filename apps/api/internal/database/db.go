@@ -8,9 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
-
-func ConnectDB() {
+func ConnectDB() (*gorm.DB,error) {
 
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable TimeZone=Asia/Bangkok",
 		config.GetEnv("DB_HOST"), config.GetEnv("DB_PORT"), config.GetEnv("DB_USER"),
@@ -22,5 +20,5 @@ func ConnectDB() {
 		panic("failed to connect Database")
 	}
 
-	DB = db
+	return db, nil
 }
