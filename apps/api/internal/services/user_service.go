@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
+	"errors"
 	"fiber-api/internal/config"
 	"fiber-api/internal/models"
 	"fiber-api/internal/models/dto"
@@ -117,12 +118,12 @@ func (us *userService) DeleteUser(email string) error {
 	return result.Error
 }
 
-func (us *userService) VerifyPassword(email string, password string) (bool, error) {
+func (us *userService) VerifyPassword(email string, password string) (dto.UserDTO, error) {
 	//userObj, err := GetUserByEmail(email)
 	var userObj models.User
 	us.DB.Where("email = ?", email).First(&userObj)
 	if userObj.ID == 0 {
-		return false, gorm.ErrRecordNotFound
+		return dto.UserDTO{}, errors.New("user not found")
 	}
 	//fmt.Printf("UserObj: %+v\n", userObj)
 
@@ -142,7 +143,22 @@ func (us *userService) VerifyPassword(email string, password string) (bool, erro
 	//fmt.Printf("ReceiveHash: %s\n", receiveHash)
 	expectedHash, _ := base64.RawStdEncoding.DecodeString(userObj.PasswordHash)
 	//fmt.Printf("ExpectedHash: %s\n", expectedHash)
-	return hmac.Equal(receiveHash, expectedHash), nil
+	isValid := hmac.Equal(receiveHash, expectedHash)
+	//fmt.Printf("IsValid: %v\n", isValid)
+
+	if !isValid {
+		return dto.UserDTO{}, errors.New("invalid password")
+	}
+
+	userDTO := dto.UserDTO{
+		Email:   userObj.Email,
+		Name:    userObj.Name,
+		Surname: userObj.Surname,
+		Age:     userObj.Age,
+		Address: userObj.Address,
+	}
+
+	return userDTO, nil
 }
 
 func (us *userService) ChangePassword(email string, newPassword string) error {

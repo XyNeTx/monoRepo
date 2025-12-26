@@ -19,34 +19,46 @@ import { API_LINK } from "@/constants/constants"
 import { IResponse } from "@/types/IResponse"
 import axios from "axios"
 import { toast } from "sonner"
-import { redirect } from "next/navigation"
+import { SignupDTO } from "@/types/User"
+
 
 async function SignupClick(e:React.FormEvent<HTMLFormElement>) {
   // console.log({email});
   // console.log({password});
   e.preventDefault();
-  console.log({e})
+
   const formData = new FormData(e.currentTarget);
-  console.log({formData})
-  console.log({API_LINK});
-  const data = Object.fromEntries(formData);
-  console.log({data});
-  if(data.confirmpassword !== data.password){
+
+  const data:SignupDTO = {
+    name: formData.get("name") as string,
+    surname: formData.get("surname") as string,
+    age: parseInt(formData.get("age") as string),
+    email: formData.get("email") as string,
+    password: formData.get("password") as string
+  }
+
+  if(formData.get("confirmpassword") as string !== formData.get("password") as string){
     return toast.error("Password and Confirm Password not matched")
   }
-  try{
-    const response:IResponse = await axios.post<IResponse>(API_LINK + "/api/users/signup", data
+  const toastLoadID = toast.loading("Signing up Please wait . . .")
+  await new Promise(resolve => setTimeout(resolve, 3000))
+  
+  try
+  {
+    const response = await axios.post<IResponse<string>>(
+      API_LINK + "/api/users/signup", data
     ).then((result)=> {
       toast.success("Registration Success Redirecting to Login. . .")
-      return result.data;
+      return result.data.message;
     })
     console.log(response);
-    redirect("/login");
+    return window.location.replace("/login")
   }
   catch (err){
     console.error(err);
+    toast.dismiss(toastLoadID);
     toast.error("Sign Up not Success Please Try Again");
-    return {} as IResponse
+    return ""
   }
 }
 
@@ -68,11 +80,11 @@ export function SignupForm({
             <FieldGroup>
               <Field className="grid grid-cols-2 gap-4">
                   <Field>
-                    <FieldLabel htmlFor="firstname">First Name</FieldLabel>
+                    <FieldLabel htmlFor="name">First Name</FieldLabel>
                     <Input id="name" name="name" type="text" required />
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor="lastname">Last Name</FieldLabel>
+                    <FieldLabel htmlFor="surname">Last Name</FieldLabel>
                     <Input id="surname" name="surname" type="text" required />
                   </Field>
                 </Field>
@@ -119,7 +131,7 @@ export function SignupForm({
               <Field>
                 <Button type="submit">Create Account</Button>
                 <FieldDescription className="text-center">
-                  Already have an account? <a href="#">Sign in</a>
+                  Already have an account? <a href="/login">Sign in</a>
                 </FieldDescription>
               </Field>
             </FieldGroup>

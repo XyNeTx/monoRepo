@@ -1,5 +1,4 @@
-"use client";
-
+/* eslint-disable @next/next/no-img-element */
 import { Book, Menu, Sunset, Trees, Zap } from "lucide-react";
 
 import {
@@ -25,6 +24,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { ToggleTheme } from "./toggle-theme";
+import { cookies } from "next/headers";
 
 interface MenuItem {
   title: string;
@@ -54,7 +54,7 @@ interface Navbar1Props {
   };
 }
 
-const Navbar1 = ({
+const Navbar1 = async ({
   logo = {
     url: "https://www.shadcnblocks.com",
     src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg",
@@ -134,10 +134,13 @@ const Navbar1 = ({
     },
   ],
   auth = {
-    login: { title: "Login", url: "http://localhost:3000/login" },
-    signup: { title: "Sign up", url: "http://localhost:3000/register" },
+    login: { title: "Login", url: "/login" },
+    signup: { title: "Sign up", url: "/signup" },
   },
 }: Navbar1Props) => {
+  
+  const allCookies = (await cookies()).getAll();
+  const name = allCookies.find(x=>x.name == "name")?.value;
   return (
     <section className="py-4">
       <div className="container">
@@ -165,12 +168,18 @@ const Navbar1 = ({
                 </NavigationMenu>
               </div>
             <div className="flex gap-2">
-              <Button asChild variant="outline" size="sm">
-                <a href={auth.login.url}>{auth.login.title}</a>
-              </Button>
-              <Button asChild size="sm">
-                <a href={auth.signup.url}>{auth.signup.title}</a>
-              </Button>
+              {name ? (
+                <span className="flex items-center justify-center me-2">{name}</span>  
+              ) : (
+                <>
+                  <Button asChild variant="outline" size="sm">
+                    <a href={auth.login.url}>{auth.login.title}</a>
+                  </Button>
+                  <Button asChild size="sm">
+                    <a href={auth.signup.url}>{auth.signup.title}</a>
+                  </Button>
+                </>
+              )}
               <ToggleTheme/>
             </div>
           </nav>

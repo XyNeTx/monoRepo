@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Metadata } from "next";
 import { Navbar1 } from "@/components/navbar1";
 import { Toaster } from "@/components/ui/sonner";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,9 +41,11 @@ export default function RootLayout({
           storageKey="theme"
           >
             <Toaster closeButton richColors position={"top-center"} expand={false} />
-            <div className="flex lg:min-w-screen w-full justtify-start lg:justify-center bg-white dark:bg-black">
-              <Navbar1/>
-            </div>
+            <Suspense>
+              <div className="flex lg:min-w-screen w-full justtify-start lg:justify-center bg-white dark:bg-black">
+                <Navbar1/>
+              </div>
+            </Suspense>
             <main className="flex min-h-screen w-full bg-white dark:bg-black">
               <div className="flex-row">
                 {children}

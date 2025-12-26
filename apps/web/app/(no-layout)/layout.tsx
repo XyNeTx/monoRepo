@@ -4,6 +4,7 @@ import "@/app/globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
+import { Suspense } from "react";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -39,7 +40,9 @@ export default function RootLayout({
                 >
                     <Toaster closeButton richColors position={"top-center"} expand={false} />
                     <main className="flex min-h-screen w-full items-center justify-center bg-white dark:bg-black sm:items-start">
-                    {children}
+                    <Suspense>
+                        {children}
+                    </Suspense>
                     </main>
                 </ThemeProvider>
             </body>

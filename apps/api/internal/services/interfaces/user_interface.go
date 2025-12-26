@@ -9,6 +9,6 @@ type UserService interface {
 	CreateUsers(userDTO dto.UserDTO) error
 	EditUsers(userDTO dto.UserDTO) (dto.UserDTO, error)
 	DeleteUser(email string) error
-	VerifyPassword(email string, password string) (bool, error)
+	VerifyPassword(email string, password string) (dto.UserDTO, error)
 	ChangePassword(email string, newPassword string) error
 }

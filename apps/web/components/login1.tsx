@@ -6,7 +6,8 @@ import { toastPromise } from "@/lib/toastPromise";
 import { IResponse } from "@/types/IResponse";
 import axios from "axios";
 import Image from "next/image";
-import { redirect } from "next/navigation";
+import { FormEvent } from "react";
+import { LoginDTO,SignupDTO } from "@/types/User";
 interface Login1Props {
   heading?: string;
   logo: {
@@ -21,26 +22,24 @@ interface Login1Props {
   signupUrl?: string;
 }
 
-export interface LoginDTO {
-  email:string,
-  password:string
-}
 
-async function LoginClicked(e:React.FormEvent<HTMLFormElement>) {
+//async function LoginClicked(e:React.FormEvent<HTMLFormElement>) {
+async function LoginClicked(e:FormEvent<HTMLFormElement>) {
   e.preventDefault();
   //console.log({API_LINK});
 
   const formData = new FormData(e.currentTarget);
-  const formObj = Object.fromEntries(formData.entries())
+  //const formObj = Object.fromEntries(formData.entries())
   const data:LoginDTO = {
-    email : formObj.email.toString(),
-    password : formObj.password.toString()
-  }
+    email : formData.get("email") as string,
+    password : formData.get("password") as string
+  } 
 
-  toastPromise( Login(data),
-    "Logging in Please Wait . . .",
-    "Login Success Redirecting . . .",
-    "Login Failed Please Try Again !!"
+  await toastPromise(Login(data),{
+    loading:"Logging in Please Wait . . .",
+    success:"Login Success Redirecting . . .",
+    error:"Login Failed Please Try Again !!"
+    }
   )
 
 }
@@ -49,15 +48,18 @@ async function Login(data:LoginDTO) {
   await new Promise(resolve => setTimeout(resolve, 3000))
   try
   {
-    await axios.post<IResponse>(API_LINK + "/api/users/login",
+    await axios.post<IResponse<SignupDTO>>(API_LINK + "/api/users/login",
       data
-    ).then(()=> {
-      return redirect("/");
+    ).then((result)=> {
+      document.cookie = `Authorization=LoggedIn;`;
+      document.cookie = `name=${result.data.data?.name} ${result.data.data?.surname}`;
+      //return console.log(result.data.data);
+      return window.location.href = "/"
     })
   }
   catch (err){
     console.error(err);
-    return {} as IResponse
+    return {} as IResponse<SignupDTO>
   }
 }
 
@@ -88,7 +90,8 @@ const Login1 = ({
               height={40}
             />
           </a>
-          <form onSubmit={LoginClicked}>
+          {/* <form onSubmit={LoginClicked}> */}
+          <form onSubmit={(e)=>LoginClicked(e)}>
             <div className="min-w-sm border-muted bg-background flex w-full max-w-sm flex-col items-center gap-y-4 rounded-md border px-6 py-8 shadow-md">
               {heading && <h1 className="text-xl font-semibold">{heading}</h1>}
               <Input
@@ -99,7 +102,6 @@ const Login1 = ({
                 className="text-sm"
                 required
               />
-              <span className="text-end items-baseline text-xs align-end">forgot password ?</span>
               <Input
                 type="password"
                 id="password"
@@ -111,6 +113,7 @@ const Login1 = ({
               <Button type="submit" className="w-full">
                 {buttonText}
               </Button>
+            <span className="text-end items-baseline text-xs align-end">Forgot Password ?</span>
             </div>
           </form>
           <div className="text-muted-foreground flex justify-center gap-1 text-sm">

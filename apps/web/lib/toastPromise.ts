@@ -1,16 +1,13 @@
 import { toast } from "sonner";
 
-export async function toastPromise <T>
+export function toastPromise<T>
 (   
-    promiseFunc: Promise<T>,
-    loadingTxt:string,
-    successTxt:string,
-    failureTxt:string,
-)
-{
-    toast.promise((promiseFunc),{
-        loading : loadingTxt,
-        success : successTxt,
-        error : failureTxt,
-    })
+    promise: Promise<T>,
+    messages: {
+        loading:string,
+        success:string,
+        error:string,
+    }
+): Promise<T> {
+    return toast.promise(promise,messages).unwrap()
 }

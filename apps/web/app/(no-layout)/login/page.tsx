@@ -2,12 +2,23 @@ import { Login1 } from "@/components/login1";
 import { API_LINK} from "@/constants/constants";
 import axios from 'axios'
 import { cacheLife } from "next/cache";
+import { cookies } from "next/headers";
+import { redirect, RedirectType } from "next/navigation";
 
 export interface GoResponse{
     message :string
 }
 
+async function CheckCookieAuth() {
+    const allCookies = (await cookies()).getAll();
+    const authToken = allCookies.find(x=>x.name.toLowerCase() === "authorization")
+    if(authToken){
+        redirect("/",RedirectType.push);
+    }
+}
+
 export async function fetchHelloGo(){
+    
     'use cache'
     cacheLife('max');
     //console.log(API_LINK);
@@ -26,6 +37,7 @@ export async function fetchHelloGo(){
 }
 
 export default async function Page() {
+    await CheckCookieAuth();
     const data = await fetchHelloGo();
     const logoProps = {
         url: "https://www.shadcnblocks.com",

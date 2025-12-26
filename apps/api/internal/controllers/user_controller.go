@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fiber-api/internal/models"
 	"fiber-api/internal/models/dto"
 	"fiber-api/internal/services/interfaces"
 	"strconv"
@@ -131,22 +130,22 @@ func (uc *UserController) DeleteUser(c fiber.Ctx) error {
 }
 
 func (uc *UserController) LoginUser(c fiber.Ctx) error {
-	loginReq := new(models.User)
+	loginReq := new(dto.UserDTO)
 
 	if err := c.Bind().Body(loginReq); err != nil {
 		return c.Status(400).JSON(fiber.Map{"message": "Invalid request"})
 	}
-	isValid, err := uc.service.VerifyPassword(loginReq.Email, loginReq.PasswordHash)
+
+	result, err := uc.service.VerifyPassword(loginReq.Email, loginReq.Password)
 
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"message": "Login failed"})
+		if err.Error() == "user not found" {
+			return c.Status(404).JSON(fiber.Map{"message": "User not found"})
+		}
+		return c.Status(401).JSON(fiber.Map{"message": err.Error()})
 	}
 
-	if !isValid {
-		return c.Status(401).JSON(fiber.Map{"message": "Invalid Email or Password"})
-	}
-
-	return c.Status(200).JSON(fiber.Map{"message": "Login successful"})
+	return c.Status(200).JSON(fiber.Map{"message": "Login successful", "data": result})
 }
 
 func (uc *UserController) ChangePassword(c fiber.Ctx) error {
